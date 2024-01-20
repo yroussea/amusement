@@ -118,9 +118,9 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 	return (ft_strlen(src));
 }
 
-void ft_strmapi_annexe(char const *s, char *res, char (*f)(unsigned int, char))
+void	ft_strmapi_anx(char const *s, char *res, char (*f)(unsigned int, char))
 {
-	static int i = 0;
+	static int	i = 0;
 
 	if (!*s)
 	{
@@ -129,7 +129,7 @@ void ft_strmapi_annexe(char const *s, char *res, char (*f)(unsigned int, char))
 	}
 	*res = f(i, *s);
 	i += 1;
-	ft_strmapi_annexe(s + 1, res + 1, f);
+	ft_strmapi_anx(s + 1, res + 1, f);
 }
 
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
@@ -143,7 +143,7 @@ char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 	result = ft_calloc(sizeof(char), (len + 1));
 	if (!result)
 		return (NULL);
-	ft_strmapi_annexe(s, result, f);
+	ft_strmapi_anx(s, result, f);
 	return (result);
 }
 
@@ -158,11 +158,13 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 
 char	*ft_strnstr(const char *big, const char *little, size_t len)
 {
-	if (len == 0 || !big)
+	if (len == 0 && !big)
 		return (NULL);
-	if (*little == '\0' || little == big)
+	if (!*little || little == big)
 		return ((char *)big);
-	if (!ft_strncmp(little, big, min(ft_strlen(little), ft_strlen(big))))
+	if (!big || len == 0 || !*big || ft_strlen(little) > len)
+		return (NULL);
+	if (!ft_strncmp(little, big, min(len, min(ft_strlen(big), ft_strlen(little)))))
 		return ((char *)(big));
 	return (ft_strnstr(big + 1, little, len - 1));
 }
