@@ -182,3 +182,150 @@ char	*ft_strrchr(const char *s, int c)
 {
 	return (ft_strrchr_annexe(s, c, ft_strlen(s)));
 }
+
+void	ft_strncpy(char *dest, char const *src, size_t len)
+{
+	if (len == 0 || !src || !*src)
+		return ;
+	*dest = *src;
+	ft_strncpy(dest + 1, src + 1, len - 1);
+}
+
+char	*ft_substr(char const *s, unsigned int start, size_t len)
+{
+	char	*result;
+
+	if (!s)
+		return (NULL);
+	if (start < ft_strlen(s))
+	{
+		result = ft_calloc(sizeof(char), (min(len, ft_strlen(s + start)) + 1));
+		if (!result)
+			return (NULL);
+		ft_strncpy(result, s + start, len);
+		return (result);
+	}
+	result = malloc(sizeof(char) * 1);
+	if (!result)
+		return (NULL);
+	result[0] = '\0';
+	return (result);
+}
+
+int	ft_find_start(const char *s1, char const *set)
+{
+	if (!*s1)
+		return (0);
+	if (!ft_strchr(set, *s1))
+		return (0);
+	return (1 + ft_find_start(s1 + 1, set));
+}
+
+int	ft_find_end(const char *s1, char const *set, size_t len)
+{
+	if (!*s1 || !(len > 0))
+		return (0);
+	if (!ft_strchr(set, *s1))
+		return (0);
+	return (ft_find_end(s1 - 1, set, len - 1) + 1);
+}
+
+static size_t	ft_len_w_trim(char const *s1, char const *set, size_t *end)
+{
+	size_t	len;
+	size_t	start;
+
+	len = ft_strlen(s1);
+	start = ft_find_start(s1, set);
+	*end = ft_find_end(s1+len-1, set, len - start);
+	return (start);
+}
+
+char	*ft_strtrim(char const *s1, char const *set)
+{
+	char	*result;
+	size_t	end;
+	size_t	start;
+	size_t	len;
+
+	if (!s1 || !set)
+		return (NULL);
+	len = ft_strlen(s1);
+	end = 1;
+	start = ft_len_w_trim(s1, set, &end);
+	result = ft_calloc(sizeof(char), (len - end - start + 1));
+	if (!result)
+		return (NULL);
+	ft_memcpy(result, s1 + start, len- end - start);
+	return (result);
+}
+
+int ft_annexe(const char *s, char c);
+
+int ft_word_count(const char *s, char c)
+{
+	if (!s || !*s)
+		return (0);
+	if (*s == c)
+		return (ft_word_count(s + 1, c));
+	return (1 + ft_annexe(s, c));
+}
+int ft_annexe(const char *s, char c)
+{
+	if (!s || !*s)
+		return (0);
+	if (*s == c)
+		return (ft_word_count(s, c));
+	return (ft_annexe(s + 1, c));
+}
+
+static int	ft_len_next_w(char const *s, char c)
+{
+	if (!s)
+		return (0);
+	if (!*s || *s == c)
+		return (0);
+	return (1 + ft_len_next_w(s + 1, c));
+}
+
+void	free_strs(char **result)
+{
+	if (!result || !*result)
+		return ;
+	free(*result);
+	free_strs(result + 1);
+}
+
+int	fill_split(char const *s, char c, char **result)
+{
+	int	j;
+
+	if (!s || !*s)
+		return (0);
+	j = ft_len_next_w(s, c);
+	if (j == 0)
+		return (fill_split(s + 1, c, result));
+	*result = ft_calloc(sizeof(char), (j + 1));
+	if (!*result)
+		return (1);
+	ft_strlcpy(*result, s, j + 1);
+	s += j - 1;
+	return (fill_split(s + 1, c, result + 1));
+}
+
+char	**ft_split(char const *s, char c)
+{
+	char	**result;
+	if (!s)
+		return (NULL);
+	result = ft_calloc(sizeof(char *), (ft_word_count(s, c) + 1));
+	if (!result)
+		return (NULL);
+	if (fill_split(s, c, result) == 1)
+	{
+		free_strs(result);
+		free(result);
+		return (NULL);
+	}
+	return (result);
+}
