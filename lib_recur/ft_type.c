@@ -1,6 +1,6 @@
 #include "libft.h"
 
-int    ft_atoi_anx(const char *s, int nb)
+int	ft_atoi_anx(const char *s, int nb)
 {
 	if (!s || !*s)
 		return (nb);
@@ -9,7 +9,7 @@ int    ft_atoi_anx(const char *s, int nb)
 	return (nb);
 }
 
-int    ft_atoi(const char *s)
+int	ft_atoi(const char *s)
 {
 	if (*s == ' ' || (9 <= *s && *s <= 13))
 		return (ft_atoi(s + 1));

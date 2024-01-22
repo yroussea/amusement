@@ -164,7 +164,8 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)
 		return ((char *)big);
 	if (!big || len == 0 || !*big || ft_strlen(little) > len)
 		return (NULL);
-	if (!ft_strncmp(little, big, min(len, min(ft_strlen(big), ft_strlen(little)))))
+	if (!ft_strncmp(little, big, \
+		min(len, min(ft_strlen(big), ft_strlen(little)))))
 		return ((char *)(big));
 	return (ft_strnstr(big + 1, little, len - 1));
 }
@@ -237,7 +238,7 @@ static size_t	ft_len_w_trim(char const *s1, char const *set, size_t *end)
 
 	len = ft_strlen(s1);
 	start = ft_find_start(s1, set);
-	*end = ft_find_end(s1+len-1, set, len - start);
+	*end = ft_find_end(s1 + len - 1, set, len - start);
 	return (start);
 }
 
@@ -256,13 +257,13 @@ char	*ft_strtrim(char const *s1, char const *set)
 	result = ft_calloc(sizeof(char), (len - end - start + 1));
 	if (!result)
 		return (NULL);
-	ft_memcpy(result, s1 + start, len- end - start);
+	ft_memcpy(result, s1 + start, len - end - start);
 	return (result);
 }
 
-int ft_annexe(const char *s, char c);
+int	ft_annexe(const char *s, char c);
 
-int ft_word_count(const char *s, char c)
+int	ft_word_count(const char *s, char c)
 {
 	if (!s || !*s)
 		return (0);
@@ -270,7 +271,8 @@ int ft_word_count(const char *s, char c)
 		return (ft_word_count(s + 1, c));
 	return (1 + ft_annexe(s, c));
 }
-int ft_annexe(const char *s, char c)
+
+int	ft_annexe(const char *s, char c)
 {
 	if (!s || !*s)
 		return (0);
@@ -316,6 +318,7 @@ int	fill_split(char const *s, char c, char **result)
 char	**ft_split(char const *s, char c)
 {
 	char	**result;
+
 	if (!s)
 		return (NULL);
 	result = ft_calloc(sizeof(char *), (ft_word_count(s, c) + 1));
